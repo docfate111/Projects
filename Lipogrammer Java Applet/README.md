@@ -4,6 +4,6 @@ other Java projects such as Caesar and Vigenere ciphers here:
 
 https://www.github.com/docfate111/Java
 
-bttps:/www.github.com/docfate111/Java2
+https://www.github.com/docfate111/Java2
 
-httpsL//www.github.com/docfate111/javafiles3
+https://www.github.com/docfate111/javafiles3
