@@ -2,24 +2,43 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-void showBoard(); void changeBoard(char input); char* board;
-char choice='a'; char symbol='x'; char other_symbol='o';
-int check(); char won=' ';
+void showBoard();
+int changeBoard(char input);
+char* board;
+char choice='a';
+char symbol='X';
+char other_symbol='O';
+int check();
+char won=' ';
+int randMove();
+int aiMove();
 int main(){
 	printf("Starting game...\n");
-	board=(char *)calloc(9, sizeof(char));
+	board=(char*)calloc(9, sizeof(char));
 	strcpy(board, "123456789");
 	printf("X or O? ");
 	scanf("%c", &symbol);
+	if(!isalpha(symbol)){
+		printf("Unrecognized option. Choosing 'O' ");
+		symbol='O';
+	}
+	//symbol is user input
+	//other_symbol is computer's move
 	if(symbol==other_symbol||toupper(symbol)==other_symbol||symbol=='0'){
-		other_symbol='x';
+		other_symbol='X';
 	}
 	while(won==' '){
 		showBoard();
-		printf("Enter a position:");
+		printf("Enter a position: ");
 		scanf(" %c", &choice);
-		changeBoard(choice);
-		if(check()){break;}
+		if(check()){
+			break;
+		}
+		else if(changeBoard(choice)){
+			printf("Tie! Game Over.");
+			showBoard();
+			return 0;
+		}
 		printf("\nI moved. Your turn.\n");
 	}
 	printf("Tic. Tac. Toe. Three in a row.\n");
@@ -31,27 +50,54 @@ int main(){
 		printf("You lost!");
 	}
 	return 0;}
-void changeBoard(char input){
-	int found=1;
-	for(int i=0; i<9; i++){
-		if(board[i]==input){board[i]=symbol; found=0;}
+int randMove(){return rand()%10;}
+int aiMove(){
+	int combo[]={0, 0};
+	int index=0;
+	int move=index;
+	for(int i=0; i<strlen(board); i++){
+		if(index==2){
+			break;
+		}
+		if(board[i]==symbol){
+			combo[index++]=i;
+		}
 	}
+	if(combo[1]==0){
+		move=randMove();
+	}else{
+		move=(combo[0]*2)-combo[1];
+	}
+	for(;;){
+	if(((isdigit(board[move])) && (board[move]!=symbol)) && (board[move]!=other_symbol)){
+		return move;
+	}
+		move=randMove();
+	}
+}
+int changeBoard(char input){
+	int found=1;
+	int count=0;
+	for(int i=0; i<9; i++){
+		if(!isdigit(board[i])){
+			count++;
+		}
+		if(board[i]==input){
+			board[i]=symbol;
+			found=0;
+	}}
+	if(count>=8){return 1;}
 	if(found){
 		printf("\nSpace taken. Enter another value.\n");
 	}
-	for(;;){
-		int r=rand()%10;
-		//if its not chosen already input a random location
-		if(board[r]!=symbol){
-			board[r]=other_symbol;
-			break;
-		}
-	}
+	int r=aiMove();
+	board[r]=other_symbol;
+	return 0;
 }
 void showBoard(){
 	printf("\n");
 	for(int j=0; j<9; j++){
-		printf("%c", board[j]);
+		printf("%c ", board[j]);
 		if((j+1)%3==0){printf("\n");}
 	}}
 int has[]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
