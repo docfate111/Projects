@@ -2,25 +2,18 @@ package src;
 /**
  * @author thwilliams
  */
+import java.util.ArrayList;
 public class Node {
-    public Node right;
-    public Node left;
+    public ArrayList<Node> arr=new ArrayList<Node>();
     public String symbol;
     public String value;
-    public Node(String symbol, String value, Node nextLeft, Node nextRight){
-        this.left=nextLeft;
-        this.right=nextRight;
+    public Node(String symbol, String value){
         this.value=value;
         this.symbol=symbol;
     }
     public void setChild(Node next){
-        if(this.right!=null){
-            this.left=next;
-        }else{
-            this.right=next;
-        }
+        this.arr.add(next);
     }
-
     public String toString(){
         if(this.value==null){
             return this.symbol;
@@ -36,25 +29,40 @@ public class Node {
         }
     }
     public int eval(){
-        if(this.value!=null){
-            return Integer.parseInt(this.value);
-        }else if(this.symbol.equals("+")){
-            return this.left.eval()+this.right.eval();
-        }else if(this.symbol.equals("-")){
-            return this.left.eval()-this.right.eval();
-        }else if(this.symbol.equals("*")){
-            return this.left.eval()*this.right.eval();
-        }else if(this.symbol.equals("%")){
-            return this.left.eval()%this.right.eval();
-        }else if(this.symbol.equals("/")){
-            int a=this.right.eval();
-            if(a==0){
-                System.out.println("Division by zero error");
-                return this.left.eval();
-            }else{
-                return (this.left.eval()/a);
+        //System.out.println(this.arr);
+        //System.out.println(this.arr.size());
+        //System.out.println(arr.get(0));
+        if(this.arr.size()==0){
+            if(this.value==null){
+                return 1;
             }
-        }
-        return 0;
+           return Integer.parseInt(this.value);
+        }else{
+            int sum=this.arr.get(0).eval();
+            if(this.value!=null){
+                return Integer.parseInt(this.value);
+            }else if(this.symbol.equals("+")){
+                for(int i=1; i<arr.size(); i++){
+                    sum+=this.arr.get(i).eval();
+                }
+            }else if(this.symbol.equals("-")){
+                for(int i=1; i<arr.size(); i++){
+                    sum-=this.arr.get(i).eval();
+                }
+            }else if(this.symbol.equals("*")){
+                for(int i=1; i<arr.size(); i++){
+                    sum*=this.arr.get(i).eval();
+                }
+            }else if(this.symbol.equals("%")){
+                for(int i=1; i<arr.size(); i++){
+                    sum%=this.arr.get(i).eval();
+                }
+            }else if(this.symbol.equals("/")){
+                for(int i=1; i<arr.size(); i++){
+                    sum/=this.arr.get(i).eval();
+                }
+            }
+        return sum;
     }
+   }
 }

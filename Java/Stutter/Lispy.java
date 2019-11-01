@@ -7,13 +7,8 @@ import java.util.List;
  */
 public class Lispy {
     public static void main(String args[]){
-       /* Node e=new Node(null, "3", null, null);
-        Node d=new Node(null, "2", null, null);
-        Node b=new Node("+", null, d, e);
-        Node c=new Node(null, "5", null, null);
-        Node a=new Node("*", null, b, c);
-        System.out.println(a.eval());*/
        String input;
+       System.out.println(containsNumbers("3A"));
         while(true){
             System.out.print("ST>");
             Scanner sc=new Scanner(System.in);
@@ -43,11 +38,15 @@ public class Lispy {
          List<String> words = new ArrayList<>();
          String str="";
          for(int i=0; i<input.length(); i++){
-             if(input.charAt(i)==' '){
-                 words.add(str);
-                 str="";
+             if(input.charAt(i)=='('||input.charAt(i)==')'){
+                 continue;
              }else{
-                 str+=input.charAt(i);
+                if(input.charAt(i)==' '){
+                    words.add(str);
+                    str="";
+                }else{
+                    str+=input.charAt(i);
+                }
              }
          }
          words.add(str);
@@ -62,48 +61,47 @@ public class Lispy {
         }
         return false;
     }
+    public static boolean containsNumbers(String a){
+        String ops="0123456789";
+        int count=0;
+        for(int i=0; i<ops.length(); i++){
+            if(a.contains(Character.toString(ops.charAt(i)))){
+                count++;
+            }
+        }
+        if(a.length()==0){
+            return false;
+        }
+        return a.length()==count;
+    }
     //method to convert into nodes
     public static int toTree(List<String> s){
         String temp;
-        Node a=null; Node b=null; 
+        Node parent=null; Node child=null; Node firstparent=null;
         for(int i=0; i<s.size(); i++){
             temp=s.get(i);
-            if(temp.contains(")")){
-                if(temp.length()>1){
-                     if(b==null){
-                        b=new Node(null, temp.substring(0, temp.length()-1), null, null);
-                     }
-                    if(a!=null){
-                        a.setChild(b);
-                        b=null;
-                    }}
-            }else{
-                if(temp.contains("(")){
-                    if(temp.length()>1){
-                        //(+ case
-                        a=new Node(Character.toString(temp.charAt(1)), null, null, null);
-                    }else{
-                        continue;
-                    }
-                     //( + case
+            if(isOp(temp)){
+                if(parent!=null){
+                   child=new Node(temp, null);
+                   parent.setChild(child);
+                   parent=child;
                 }else{
-                    if(isOp(temp)){
-                        a=new Node(Character.toString(temp.charAt(0)), null, null, null);
-                    }else{
-                        if(b==null){
-                            b=new Node(null, temp, null, null);
-                        }
-                        if(a!=null){
-                            a.setChild(b);
-                            b=null;
-                        }
-                    }
+                    parent=new Node(temp, null);
+                    firstparent=parent;
                 }
-            }
+            }else{
+                if(containsNumbers(temp)){
+                    child=new Node(null, temp);
+                    parent.setChild(child);
+                }else{
+                    System.out.println("Error: not a number!");
+                }
+                
+             }
         }
-            if(a==null){
-                return 0;
-            }
-        return a.eval();
-}
+        if(firstparent==null){
+            return 0;
+        }
+        return firstparent.eval();
+    }
 }
