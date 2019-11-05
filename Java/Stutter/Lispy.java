@@ -8,7 +8,6 @@ import java.util.List;
 public class Lispy {
     public static void main(String args[]){
        String input;
-       System.out.println(containsNumbers("3A"));
         while(true){
             System.out.print("ST>");
             Scanner sc=new Scanner(System.in);
