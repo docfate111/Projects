@@ -6,6 +6,7 @@ import java.util.List;
  * @author thwilliams
  */
 public class Lispy {
+    public static Def dfs=new Def();
     public static void main(String args[]){
        String input;
         while(true){
@@ -15,7 +16,11 @@ public class Lispy {
             if(input.equals("quit")||input.equals("exit")){
                 break;
             }
-            System.out.println(toTree(parse(input)));
+            if(input.length()==1&&Lispy.dfs.contains(input)){
+                System.out.println(Lispy.dfs.get(input));
+            }else{
+                System.out.println(toTree(parse(input)));
+            }
         }
     }
     public static boolean checkParens(String str){
@@ -52,7 +57,7 @@ public class Lispy {
          return words;
     }
     public static boolean isOp(String s){
-        String ops="+-/%*";
+        String ops="+-/%*&|^";
         for(int i=0; i<ops.length(); i++){
             if(s.contains(Character.toString(ops.charAt(i)))){
                 return true;
@@ -81,26 +86,34 @@ public class Lispy {
             temp=s.get(i);
             if(isOp(temp)){
                 if(parent!=null){
-                   child=new Node(temp, null);
-                   parent.setChild(child);
-                   parent=child;
+                    child=new Node(temp, null);
+                    parent.setChild(child);
+                    parent=child;
                 }else{
                     parent=new Node(temp, null);
                     firstparent=parent;
                 }
             }else{
-                if(containsNumbers(temp)){
+                if(containsNumbers(temp)||Lispy.dfs.contains(temp)){
+                    if(Lispy.dfs.contains(temp)){
+                        temp=Integer.toString(Lispy.dfs.get(temp));
+                        //System.out.println("added to tree!");
+                    }
                     child=new Node(null, temp);
                     parent.setChild(child);
                 }else{
-                    System.out.println("Error: not a number!");
-                }
-                
-             }
+                    if(temp.equals("def")){
+                        i++;
+                        Lispy.dfs.addDef(s.get(i++), Integer.parseInt(s.get(i++)));
+                    }else{
+                            System.out.println("Error: not a number!");
+                    }
+                } 
+            }
         }
-        if(firstparent==null){
-            return 0;
-        }
-        return firstparent.eval();
+            if(firstparent==null){
+                return 0;
+            }
+      return firstparent.eval();
     }
 }

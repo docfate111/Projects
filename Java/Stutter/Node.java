@@ -61,6 +61,18 @@ public class Node {
                 for(int i=1; i<arr.size(); i++){
                     sum/=this.arr.get(i).eval();
                 }
+            }else if(this.symbol.equals("&")){
+                for(int i=1; i<arr.size(); i++){
+                    sum=sum&this.arr.get(i).eval();
+                }
+            }else if(this.symbol.equals("|")){
+                for(int i=1; i<arr.size(); i++){
+                    sum|=this.arr.get(i).eval();
+                }
+            }else if(this.symbol.equals("^")){
+                for(int i=1; i<arr.size(); i++){
+                    sum=sum^this.arr.get(i).eval();
+                }
             }
         return sum;
     }
